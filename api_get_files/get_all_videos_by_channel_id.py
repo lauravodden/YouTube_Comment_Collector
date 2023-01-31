@@ -3,7 +3,6 @@ Gets playlistId for a channel, using channel id.
 In this case the playlistId is the full collection of videos, not a regular YouTube playlist.
 Then gets YouTube videos within that full playlist.
 
-
 !!! Note that each request to the channels endpoint costs 1 quota !!!
 !!! Note that each request to the playlists endpoint costs 1 quota !!!
 
@@ -12,28 +11,32 @@ Then gets YouTube videos within that full playlist.
 # Imports
 # -------
 import os
+import datetime as dt
 import pandas as pd
 import googleapiclient.discovery
 import googleapiclient.errors
 
-# Setup
-# -----
+from config import *
+#TODO incorporate logging
+
+# API Setup
+# ---------
 os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
 api_service_name = "youtube"
 api_version = "v3"
 
 # Paths and Keys
 # --------------
-filepath = r'C:\Users\vodden\PycharmProjects\YouTube_Data_API\outputs\yt_multi.csv'
-# filepath = r"C:\Users\Path\To\Where\You\Want\ToSaveYour.csv"
+cwd = os.getcwd()
+time = dt.datetime.now().strftime('%Y%m%d_%H%M')
+filepath = f'{cwd}/outputs/output_{time}.csv'
 
 DEVELOPER_KEY = os.environ['DEVELOPER_KEY']
-# DEVELOPER_KEY = r"C:\Users\Path\To\Developer\Key"
 
 # Search parameters
 # -----------------
 part = "snippet"
-channelIds = ["UCAql2DyGU2un1Ei2nMYsqOA", "UCNUdvHOk9vIgPq2rhHvhkgA"] #DonaldJTrumpforPresident
+# channelIds = channelIds #DonaldJTrumpforPresident
 
 # max results per page; max=50, min=0, default=5
 results_per_page = 50
@@ -93,6 +96,9 @@ def main():
     id_count = 1
     for channelId in channelIds:
         id_count = id_count + 1
+        # TODO can I put username in here too?
+        print('--------------------------------------------------------------------------------------------------')
+        print(f'\nCollecting videos from {channelId}')
         try:
             # Get credentials and create an API client
             youtube = googleapiclient.discovery.build(
